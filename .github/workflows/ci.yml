@@ -1,0 +1,79 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+
+jobs:
+  lint-and-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        env:
+          HUSKY: 0
+        run: npm ci
+
+      - name: Lint test code
+        run: npm run lint
+
+      - name: Start mock services
+        run: npm run docker:up
+
+      - name: Run Cucumber JSON tests
+        run: npm run test:ci
+
+      - name: Run Allure result generation tests
+        if: always()
+        run: npm run test:allure
+
+      - name: Setup Java for Allure CLI
+        if: always()
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Build Allure HTML report
+        if: always()
+        run: npm run allure:generate
+
+      - name: Upload test results artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: cucumber-test-results
+          path: reports/test-results.json
+          if-no-files-found: ignore
+
+      - name: Upload Allure results artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-results
+          path: reports/allure-results
+          if-no-files-found: ignore
+
+      - name: Upload Allure HTML artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: allure-report
+          path: reports/allure-report
+          if-no-files-found: ignore
+
+      - name: Stop services
+        if: always()
+        run: npm run docker:down

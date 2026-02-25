@@ -1,0 +1,44 @@
+services:
+  user-service:
+    build:
+      context: ./mock-services
+      dockerfile: Dockerfile
+      args:
+        SERVICE_FILE: user-service.js
+        PORT: 3001
+    container_name: user-service
+    ports:
+      - '3001:3001'
+    environment:
+      - PORT=3001
+    networks:
+      - api-network
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3001/health']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  order-service:
+    build:
+      context: ./mock-services
+      dockerfile: Dockerfile
+      args:
+        SERVICE_FILE: order-service.js
+        PORT: 3002
+    container_name: order-service
+    ports:
+      - '3002:3002'
+    environment:
+      - PORT=3002
+    networks:
+      - api-network
+    healthcheck:
+      test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3002/health']
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+networks:
+  api-network:
+    driver: bridge

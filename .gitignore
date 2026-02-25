@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# TypeScript build output
+dist/
+*.js.map
+
+# Test reports
+reports/
+
+# Environment overrides (never commit secrets or local URL overrides)
+.env
+.env.local
+.env.*.local
+
+# OS artefacts
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.idea/
