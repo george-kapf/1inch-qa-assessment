@@ -1,5 +1,7 @@
 # API Test Assessment - 1Inch
 
+[![CI](https://github.com/george-kapf/api-test-assessment/actions/workflows/ci.yml/badge.svg)](https://github.com/george-kapf/1inch-qa-assessment/actions/workflows/ci.yml)
+
 BDD API test suite built with Playwright and Cucumber.js. Two lightweight Express mock services run in Docker and act as the system under test.
 
 ## Project Structure
