@@ -1,1 +1,12 @@
-npx --no -- commitlint --edit "$1"
+# PHASE 1: GIT HOOK AUTOMATION (PRE-COMMIT/COMMIT-MSG)
+# This command is executed by Husky to intercept the commit process.
+# It ensures the message follows the rules defined in 'commitlint.config.js'.
+
+npx \
+  --no \        # '--no': Forces npx to use the local version of commitlint in 'node_modules'.
+                # This prevents the CI/CD pipeline from downloading a random version from the web.
+  \
+  -- commitlint \ # The package being executed to validate the text.
+  \
+  --edit "$1"   # '--edit': Tells commitlint to read the message from the temporary 
+                # commit file (passed as the first argument '$1' by Git).
