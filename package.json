@@ -1,19 +1,43 @@
 {
+  /* PHASE 1: PROJECT METADATA & ORCHESTRATION */
+  /* This is the "Engine Room" of your framework. It defines how to build, 
+     test, and report on the User-to-Order journey. */
   "name": "api-test-assessment",
   "version": "1.0.0",
   "description": "BDD API test suite using Playwright and Cucumber",
+  
   "scripts": {
+    /* HOOKS: Initializes Husky to manage Git hooks (Phase 1). */
     "prepare": "husky",
+    
+    /* FORMATTING: Runs Prettier across the whole project to ensure clean code. */
     "prettier": "prettier --write .",
+    
+    /* LINTING: Runs ESLint to find logic errors or missing types in the tests. */
     "lint": "eslint 'tests/**/*.ts'",
+    
+    /* LOCAL TESTING: Runs Cucumber with the 'report' profile for human-readable HTML. */
     "test": "mkdir -p reports && cucumber-js --config cucumber.config.js --profile report",
+    
+    /* CI TESTING: Optimized for GitHub Actions; outputs JSON for pipeline parsing. */
     "test:ci": "mkdir -p reports && cucumber-js --config cucumber.config.js --profile ci",
+    
+    /* ALLURE DATA: Generates the raw results needed for the advanced dashboard. */
     "test:allure": "mkdir -p reports/allure-results && cucumber-js --config cucumber.config.js --profile allure --format-options '{\"resultsDir\":\"reports/allure-results\"}'",
+    
+    /* REPORT GENERATION: Transforms raw Allure data into a polished HTML site. */
     "allure:generate": "allure generate reports/allure-results --clean -o reports/allure-report",
     "allure:open": "allure open reports/allure-report",
+    
+    /* INFRASTRUCTURE: 
+       'docker:up' builds the Linux-based containers and WAITS for the 
+       /health endpoints to be ready before returning control. */
     "docker:up": "docker compose up -d --build --wait --wait-timeout 60",
     "docker:down": "docker compose down"
   },
+
+  /* PHASE 1: PRE-COMMIT AUTOMATION */
+  /* Ensures that only valid, formatted code is ever allowed into the Git history. */
   "lint-staged": {
     "tests/**/*.ts": [
       "eslint --fix",
@@ -23,22 +47,13 @@
       "prettier --write"
     ]
   },
+
+  /* STACK DEFINITION: 
+     - Cucumber/Playwright: Core BDD & API Testing tools.
+     - TypeScript/ESLint: Static analysis and type safety.
+     - Allure: Advanced reporting.
+     - Husky/Commitlint: Git governance. */
   "devDependencies": {
     "@commitlint/cli": "^20.4.2",
     "@commitlint/config-conventional": "^20.4.2",
     "@cucumber/cucumber": "^10.3.1",
-    "@playwright/test": "^1.42.1",
-    "allure-commandline": "^2.36.0",
-    "allure-cucumberjs": "^3.4.5",
-    "@types/node": "^20.11.0",
-    "@typescript-eslint/eslint-plugin": "^8.56.0",
-    "@typescript-eslint/parser": "^8.56.0",
-    "eslint": "^10.0.1",
-    "eslint-config-prettier": "^10.1.8",
-    "husky": "^9.1.7",
-    "lint-staged": "^16.2.7",
-    "prettier": "^3.8.1",
-    "ts-node": "^10.9.2",
-    "typescript": "^5.3.3"
-  }
-}
