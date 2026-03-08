@@ -1,8 +1,13 @@
 {
+  /* PHASE 1 & 4: MOCK SERVICE DEPENDENCY MANAGEMENT */
+  /* This file defines the technical requirements for the User and Order services. */
   "name": "mock-services",
   "version": "1.0.0",
   "description": "Shared dependencies for all mock services",
   "private": true,
+  /* DEPENDENCIES: 
+     We use 'express' as the minimal web framework to handle the GET and POST 
+     requirements for ports 3001 and 3002. */
   "dependencies": {
     "express": "^4.18.2"
   }
