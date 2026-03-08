@@ -1,5 +1,8 @@
+# PHASE 1: CONTINUOUS INTEGRATION (CI) PIPELINE
+# This file automates the test execution in a clean Linux environment on every push or pull request.
 name: CI
 
+# TRIGGERS: Ensures that code quality is checked automatically before merging.
 on:
   push:
     branches:
@@ -8,37 +11,54 @@ on:
 
 jobs:
   automation-tests:
+    # PLATFORM: Runs on a Linux runner (Ubuntu) to satisfy the Linux-based container requirement.
     runs-on: ubuntu-latest
     timeout-minutes: 20
 
     steps:
+      # STEP 1: Fetch the code from the GitHub repository.
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # STEP 2: Install Node.js. 
+      # Version 20 provides the modern environment needed for Playwright and TypeScript.
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: npm
 
+      # STEP 3: Install Project Dependencies.
+      # 'npm ci' (Clean Install) ensures the environment matches the 'package-lock.json' exactly.
       - name: Install dependencies
         env:
-          HUSKY: 0
+          HUSKY: 0 # Disables git hooks to speed up the CI process.
         run: npm ci
 
+      # STEP 4: Static Code Analysis.
+      # Runs linting to ensure the code follows professional formatting and style standards.
       - name: Lint test code
         run: npm run lint
 
+      # STEP 5: SERVICE ORCHESTRATION (PHASE 4).
+      # Launches the Linux-based Docker containers for User (3001) and Order (3002) services.
       - name: Start mock services
         run: npm run docker:up
 
+      # STEP 6: TEST EXECUTION (PHASE 5).
+      # Runs the Cucumber BDD scenarios and generates a machine-readable JSON report.
       - name: Run Cucumber JSON tests
         run: npm run test:ci
 
+      # STEP 7: ALLURE DATA CAPTURE.
+      # Runs tests again with the Allure formatter. 'if: always()' ensures reports are 
+      # generated even if the tests fail, providing debugging evidence.
       - name: Run Allure result generation tests
         if: always()
         run: npm run test:allure
 
+      # STEP 8: JAVA DEPENDENCY.
+      # Allure CLI requires Java to transform raw results into a visual HTML dashboard.
       - name: Setup Java for Allure CLI
         if: always()
         uses: actions/setup-java@v4
@@ -46,10 +66,14 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      # STEP 9: REPORT GENERATION.
+      # Converts the 'allure-results' folder into the final 'allure-report' (HTML).
       - name: Build Allure HTML report
         if: always()
         run: npm run allure:generate
 
+      # STEP 10: ARTIFACT UPLOAD (RESULTS).
+      # Saves the JSON test results so they can be downloaded from the GitHub UI.
       - name: Upload test results artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -58,6 +82,8 @@ jobs:
           path: reports/test-results.json
           if-no-files-found: ignore
 
+      # STEP 11: ARTIFACT UPLOAD (VISUAL REPORT).
+      # Saves the Allure HTML report as a zip file for stakeholder review.
       - name: Upload Allure results artifact
         if: always()
         uses: actions/upload-artifact@v4
@@ -71,9 +97,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: allure-report
-          path: reports/allure-report
-          if-no-files-found: ignore
-
-      - name: Stop services
-        if: always()
-        run: npm run docker:down
+          path: reports/
