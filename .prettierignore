@@ -1,6 +1,30 @@
+# PHASE 5: ARTIFACT & LOCKFILE MANAGEMENT
+# This file prevents "transient" test data and platform-specific locks
+# from cluttering the version control system.
+
+# DEPENDENCIES:
+# node_modules are excluded because they are reinstalled by 'npm ci' 
+# in the Linux Docker environment to ensure platform compatibility.
 node_modules/
+
+# BUILD OUTPUT:
+# Compiled JavaScript files (dist/) are generated at runtime. 
+# We only commit the TypeScript source code to keep the repository clean.
 dist/
+
+# TEST REPORTS (BASIC):
+# Excludes local HTML and JSON reports to prevent Git history bloat.
 reports/
+
+# ALLURE REPORTING DATA:
+# 'allure-results' (raw data) and 'allure-report' (final HTML) are 
+# ignored because they are generated fresh by the CI/CD pipeline 
+# for every push or pull request.
 allure-results/
 allure-report/
+
+# LOCKFILES:
+# We ignore generic *.lock files to prevent conflicts between different 
+# package managers (like yarn vs npm) or local system locks.
+# (Note: 'package-lock.json' is usually kept, but other temp locks are ignored).
 *.lock
