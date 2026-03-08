@@ -1,21 +1,36 @@
-# Dependencies
+# PHASE 1: REPOSITORY HYGIENE & SECURITY
+# This file ensures that temporary, local, or sensitive files are not 
+# committed to the GitHub repository.
+
+# DEPENDENCIES:
+# We do not commit 'node_modules/' because they are platform-specific.
+# 'npm ci' in the GitHub Actions pipeline reinstalls these from scratch.
 node_modules/
 
-# TypeScript build output
+# BUILD ARTEFACTS:
+# Excludes the compiled JavaScript and source maps. 
+# We want the repository to contain only the "Source of Truth" (TypeScript).
 dist/
 *.js.map
 
-# Test reports
+# TEST REPORTS:
+# Local test results and Allure reports are generated fresh on every run.
+# Committing them would cause "Git Bloat" and unnecessary merge conflicts.
 reports/
 
-# Environment overrides (never commit secrets or local URL overrides)
+# SECURITY & ENVIRONMENT:
+# Critical: Never commit '.env' files. 
+# These may contain local URL overrides or secrets that should remain private.
 .env
 .env.local
 .env.*.local
 
-# OS artefacts
+# SYSTEM-SPECIFIC FILES:
+# Removes "Junk" files created by MacOS or Windows file explorers.
 .DS_Store
 Thumbs.db
 
-# Editor directories
+# IDE CONFIGURATION:
+# Excludes settings from editors like VS Code or WebStorm (.idea/).
+# This allows different developers to use their own preferred tools.
 .idea/
