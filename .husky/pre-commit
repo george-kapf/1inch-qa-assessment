@@ -1,1 +1,9 @@
-npx lint-staged
+# PHASE 1: MICRO-LINTING (PRE-COMMIT HOOK)
+# This command is executed by Husky just before a 'git commit' is finalized.
+# It ensures that only 'staged' files (the ones you changed) are checked.
+
+npx \
+  # LINT-STAGED: 
+  # This tool reads your 'package.json' or '.lintstagedrc' to find specific 
+  # tasks (like ESLint or Prettier) for different file types.
+  lint-staged
