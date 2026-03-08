@@ -1,28 +1,38 @@
+# PHASE 4: SERVICE ORCHESTRATION
+# This file automates the launching of the entire microservice environment.
+# It ensures both services run on a shared Linux network.
 services:
+  # USER SERVICE CONFIGURATION (Port 3001)
   user-service:
     build:
       context: ./mock-services
       dockerfile: Dockerfile
+      # BUILD ARGS: Tells the Dockerfile to use the User script and Port 3001.
       args:
         SERVICE_FILE: user-service.js
         PORT: 3001
     container_name: user-service
+    # PORT MAPPING: Maps the container's internal port to the host's Port 3001.
     ports:
       - '3001:3001'
     environment:
       - PORT=3001
     networks:
       - api-network
+    # HEALTHCHECK: Prevents "Flaky" tests by verifying the API is up.
+    # It uses 'wget' to ping the /health endpoint we created in the JS file.
     healthcheck:
       test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3001/health']
       interval: 10s
       timeout: 5s
       retries: 3
 
+  # ORDER SERVICE CONFIGURATION (Port 3002)
   order-service:
     build:
       context: ./mock-services
       dockerfile: Dockerfile
+      # BUILD ARGS: Tells the Dockerfile to use the Order script and Port 3002.
       args:
         SERVICE_FILE: order-service.js
         PORT: 3002
@@ -33,12 +43,15 @@ services:
       - PORT=3002
     networks:
       - api-network
+    # HEALTHCHECK: Ensures the Order Service is ready before the 35.95 order test begins.
     healthcheck:
       test: ['CMD', 'wget', '--spider', '-q', 'http://localhost:3002/health']
       interval: 10s
       timeout: 5s
       retries: 3
 
+# NETWORK DEFINITION:
+# Creates an isolated virtual network so the services can communicate if needed.
 networks:
   api-network:
     driver: bridge
