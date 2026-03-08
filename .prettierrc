@@ -1,8 +1,26 @@
 {
+  /* PHASE 1: CODE FORMATTING STANDARDS */
+  /* Prettier ensures that every developer on the project uses the same 
+     visual style, which prevents "noise" in Git diffs. */
+
+  /* Readability: Uses 'single quotes' instead of double quotes for a cleaner look. */
   "singleQuote": true,
+
+  /* Reliability: Always includes semicolons to prevent unexpected JS execution errors. */
   "semi": true,
+
+  /* Maintenance: Adds a trailing comma to the last item in objects/arrays. 
+     This makes Git diffs much cleaner when a new line is added later. */
   "trailingComma": "all",
+
+  /* Scannability: Sets the maximum line length to 200 characters. 
+     This is ideal for API tests where long URL strings or JSON objects are common. */
   "printWidth": 200,
+
+  /* Consistency: Standardizes indentation to 2 spaces for a compact, readable structure. */
   "tabWidth": 2,
+
+  /* Type Safety: Always includes parentheses around arrow function arguments 
+     (e.g., '(userId) =>'), which aligns with strict TypeScript standards. */
   "arrowParens": "always"
 }
