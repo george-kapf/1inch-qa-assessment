@@ -1,15 +1,47 @@
 {
+  /* PHASE 1: TYPESCRIPT COMPILER CONFIGURATION */
+  /* This file defines how the TypeScript engine interprets your code. 
+     It transforms your type-safe .ts files into executable JavaScript. */
   "compilerOptions": {
+    /* Modernity: Targets ES2020 to utilize modern JavaScript features like 
+       Optional Chaining and Nullish Coalescing (??). */
     "target": "ES2020",
+
+    /* Compatibility: Uses 'commonjs' to match the Node.js runtime used 
+       by Playwright and Cucumber.js. */
     "module": "commonjs",
+
+    /* Standard Libraries: Includes the ES2020 type definitions for 
+       built-in objects like Arrays and Promises. */
     "lib": ["ES2020"],
+
+    /* TYPE SAFETY: 
+       "strict": true enables a suite of checks (like noImplicitAny), 
+       ensuring that your User and Order models are strictly followed. */
     "strict": true,
+
+    /* Interoperability: Allows the test suite to import 'Express' or other 
+       CommonJS modules as if they were standard ES Modules. */
     "esModuleInterop": true,
+
+    /* Data Handling: Enables the direct import of .json files, 
+       which is useful for loading mock data or configuration. */
     "resolveJsonModule": true,
+
+    /* Output Management: Directs the compiled code to the /dist folder, 
+       keeping the root directory clean. */
     "outDir": "./dist",
     "rootDir": "./",
+
+    /* Performance: Skips checking type definitions in node_modules, 
+       significantly speeding up the 'npm run lint' and build times. */
     "skipLibCheck": true
   },
+
+  /* SCOPE: Tells the compiler exactly which files to protect with types. */
   "include": ["tests/**/*.ts"],
+
+  /* HYGIENE: Ensures the compiler doesn't waste resources on dependencies 
+     or previously built files. */
   "exclude": ["node_modules", "dist"]
 }
